@@ -1,0 +1,32 @@
+{
+    "name": "eganesha/cas-auth",
+    "description": "Laravel CAS Authentication integration for SSO Undiksha",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kadek Satria",
+            "email": "kadeksatriakurniawan@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "EGanesha\\CasAuth\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EGanesha\\CasAuth\\CasServiceProvider"
+            ],
+            "aliases": {
+                "Cas": "EGanesha\\CasAuth\\Facades\\Cas"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    }
+}
