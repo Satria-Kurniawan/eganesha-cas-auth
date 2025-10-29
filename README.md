@@ -70,21 +70,20 @@ Route::get('/profile', function () {
     $ticket = request('ticket');
     $serviceUrl = url('/profile');
 
-    if ($ticket) {
-        if (Cas::validateTicket($ticket, $serviceUrl)) {
-            Cas::storeCasUserInSession();
-
-            return Redirect::to($serviceUrl);
-        }
+    if ($ticket && Cas::validateTicket($ticket, $serviceUrl)) {
+        Cas::storeCasUserInSession();
+        return redirect($serviceUrl);
     }
 
+    // Jika sudah terautentikasi
     if (Cas::isAuthenticated()) {
-        $emailAtauUsername = Cas::getCurrentUser();
-        return "Halo, " . $emailAtauUsername;
-    } else {
-        return "Gagal autentikasi.";
+        $user = Cas::getCurrentUser();
+        return "Halo, " . $user;
     }
+
+    return 'Gagal autentikasi';
 });
+
 ```
 
 🚪 Logout CAS
