@@ -41,7 +41,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('cas.auth')->get('/', function () {
     if (Cas::isAuthenticated()) {
         $user = Cas::getCurrentUser();
-        $attributes = Cas::getAttributes();
 
         return $user;
     }
