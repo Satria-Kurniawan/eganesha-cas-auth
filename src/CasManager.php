@@ -33,7 +33,6 @@ class CasManager
      */
     public function redirectToLogin(?string $serviceUrl = null)
     {
-        // Jika user sudah login, tidak perlu redirect
         if ($this->isAuthenticated()) {
             return redirect($serviceUrl ?? url('/'));
         }
