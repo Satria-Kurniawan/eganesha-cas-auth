@@ -25,6 +25,23 @@ class CasManager
         return "{$baseUrl}/{$loginPath}?service=" . urlencode($serviceUrl);
     }
 
+    /**
+     * Redirect ke halaman login CAS sesuai service URL yang diberikan.
+     *
+     * @param string|null $serviceUrl
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirectToLogin(?string $serviceUrl = null)
+    {
+        // Jika user sudah login, tidak perlu redirect
+        if ($this->isAuthenticated()) {
+            return redirect($serviceUrl ?? url('/'));
+        }
+
+        $loginUrl = $this->getLoginUrl($serviceUrl ?? url()->current());
+        return redirect()->away($loginUrl);
+    }
+
     public function validateTicket(string $ticket, string $serviceUrl): bool
     {
         $baseUrl = rtrim($this->config['cas_server_url'], '/');
@@ -96,20 +113,11 @@ class CasManager
         return session('cas_attributes', []);
     }
 
-    /**
-     * Menghapus session CAS dari aplikasi lokal (tanpa keluar dari CAS server)
-     */
     public function logout(): void
     {
         session()->forget(['cas_user', 'cas_attributes']);
     }
 
-    /**
-     * Mendapatkan URL logout CAS (dengan optional redirect kembali ke aplikasi)
-     *
-     * @param string|null $redirectUrl URL aplikasi setelah logout
-     * @return string
-     */
     public function getLogoutUrl(?string $redirectUrl = null): string
     {
         $baseUrl = rtrim($this->config['cas_server_url'], '/');
@@ -123,15 +131,9 @@ class CasManager
         return $url;
     }
 
-    /**
-     * Logout dari aplikasi lokal dan redirect ke CAS server logout
-     *
-     * @param string|null $redirectUrl URL aplikasi setelah logout (opsional)
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function logoutAndRedirect(?string $redirectUrl = null)
     {
-        $this->logout(); // Hapus session lokal
+        $this->logout();
 
         $casLogoutUrl = $this->getLogoutUrl($redirectUrl ?? url('/'));
         return redirect()->away($casLogoutUrl);
